@@ -1,0 +1,1076 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/L.Control.Layers.Tree.css">
+        <link rel="stylesheet" href="css/L.Control.Locate.min.css">
+        <link rel="stylesheet" href="css/qgis2web.css">
+        <link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title>Aksesibilitas Fasilitas Transiit Kota Surabaya</title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/L.Control.Layers.Tree.min.js"></script>
+        <script src="js/L.Control.Locate.min.js"></script>
+        <script src="js/leaflet-svg-shape-markers.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
+        <script src="data/Administrasi_SBY_1.js"></script>
+        <script src="data/WilayahAksesibilitasHalteBus_2.js"></script>
+        <script src="data/AksesibilitasHalteBus_3.js"></script>
+        <script src="data/RuteBusSurabaya_4.js"></script>
+        <script src="data/HalteBusSurabaya_5.js"></script>
+        <script src="data/WilayahAksesibilitasStasiunMRT_6.js"></script>
+        <script src="data/AksesibilitasStasiunMRT_7.js"></script>
+        <script src="data/RuteMRT_8.js"></script>
+        <script src="data/StasiunMRT_9.js"></script>
+        <script src="data/RelKereta_10.js"></script>
+        <script src="data/WilayahAksesibilitasStasiunSRLL_11.js"></script>
+        <script src="data/StasiunSRLL_12.js"></script>
+        <script src="data/WilayahAksesibilitasStasiunKereta_13.js"></script>
+        <script src="data/AksesibilitasStasiunKereta_14.js"></script>
+        <script src="data/StasiunKereta_15.js"></script>
+        <script>
+        var map = L.map('map', {
+            zoomControl:false, maxZoom:28, minZoom:1
+        }).fitBounds([[-7.362861923991351,112.61960268040018],[-7.200361766586196,112.82165494318818]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        // remove popup's row if "visible-with-data"
+        function removeEmptyRowsFromPopupContent(content, feature) {
+         var tempDiv = document.createElement('div');
+         tempDiv.innerHTML = content;
+         var rows = tempDiv.querySelectorAll('tr');
+         for (var i = 0; i < rows.length; i++) {
+             var td = rows[i].querySelector('td.visible-with-data');
+             var key = td ? td.id : '';
+             if (td && td.classList.contains('visible-with-data') && feature.properties[key] == null) {
+                 rows[i].parentNode.removeChild(rows[i]);
+             }
+         }
+         return tempDiv.innerHTML;
+        }
+        // add class to format popup if it contains media
+		function addClassToPopupIfMedia(content, popup) {
+			var tempDiv = document.createElement('div');
+			tempDiv.innerHTML = content;
+			if (tempDiv.querySelector('td img')) {
+				popup._contentNode.classList.add('media');
+					// Delay to force the redraw
+					setTimeout(function() {
+						popup.update();
+					}, 10);
+			} else {
+				popup._contentNode.classList.remove('media');
+			}
+		}
+        var title = new L.Control({'position':'bottomright'});
+        title.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info');
+            this.update();
+            return this._div;
+        };
+        title.update = function () {
+            this._div.innerHTML = '<h2>Aksesibilitas Fasilitas Transiit Kota Surabaya</h2>';
+        };
+        title.addTo(map);
+        var zoomControl = L.control.zoom({
+            position: 'topleft'
+        }).addTo(map);
+        L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_Positron_0');
+        map.getPane('pane_Positron_0').style.zIndex = 400;
+        var layer_Positron_0 = L.tileLayer('https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+            pane: 'pane_Positron_0',
+            opacity: 1.0,
+            attribution: '<a href="https://cartodb.com/basemaps/">Map tiles by CartoDB, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</a>',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 20
+        });
+        layer_Positron_0;
+        map.addLayer(layer_Positron_0);
+        function pop_Administrasi_SBY_1(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FCODE'] !== null ? autolinker.link(feature.properties['FCODE'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['REMARK'] !== null ? autolinker.link(feature.properties['REMARK'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['METADATA'] !== null ? autolinker.link(feature.properties['METADATA'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SRS_ID'] !== null ? autolinker.link(feature.properties['SRS_ID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDBBPS'] !== null ? autolinker.link(feature.properties['KDBBPS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDCBPS'] !== null ? autolinker.link(feature.properties['KDCBPS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDCPUM'] !== null ? autolinker.link(feature.properties['KDCPUM'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDEBPS'] !== null ? autolinker.link(feature.properties['KDEBPS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDEPUM'] !== null ? autolinker.link(feature.properties['KDEPUM'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDPBPS'] !== null ? autolinker.link(feature.properties['KDPBPS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDPKAB'] !== null ? autolinker.link(feature.properties['KDPKAB'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KDPPUM'] !== null ? autolinker.link(feature.properties['KDPPUM'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LUASWH'] !== null ? autolinker.link(feature.properties['LUASWH'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TIPADM'] !== null ? autolinker.link(feature.properties['TIPADM'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMKC'] !== null ? autolinker.link(feature.properties['WADMKC'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMKD'] !== null ? autolinker.link(feature.properties['WADMKD'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMKK'] !== null ? autolinker.link(feature.properties['WADMKK'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMPR'] !== null ? autolinker.link(feature.properties['WADMPR'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WIADKC'] !== null ? autolinker.link(feature.properties['WIADKC'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WIADKK'] !== null ? autolinker.link(feature.properties['WIADKK'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WIADPR'] !== null ? autolinker.link(feature.properties['WIADPR'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WIADKD'] !== null ? autolinker.link(feature.properties['WIADKD'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SHAPE_AREA'] !== null ? autolinker.link(feature.properties['SHAPE_AREA'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SHAPE_LEN'] !== null ? autolinker.link(feature.properties['SHAPE_LEN'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Luas'] !== null ? autolinker.link(feature.properties['Luas'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_Administrasi_SBY_1_0() {
+            return {
+                pane: 'pane_Administrasi_SBY_1',
+                opacity: 1,
+                color: 'rgba(227,26,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 4.0, 
+                fillOpacity: 0,
+                interactive: false,
+            }
+        }
+        map.createPane('pane_Administrasi_SBY_1');
+        map.getPane('pane_Administrasi_SBY_1').style.zIndex = 401;
+        map.getPane('pane_Administrasi_SBY_1').style['mix-blend-mode'] = 'normal';
+        var layer_Administrasi_SBY_1 = new L.geoJson(json_Administrasi_SBY_1, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_Administrasi_SBY_1',
+            layerName: 'layer_Administrasi_SBY_1',
+            pane: 'pane_Administrasi_SBY_1',
+            onEachFeature: pop_Administrasi_SBY_1,
+            style: style_Administrasi_SBY_1_0,
+        });
+        bounds_group.addLayer(layer_Administrasi_SBY_1);
+        map.addLayer(layer_Administrasi_SBY_1);
+        function pop_WilayahAksesibilitasHalteBus_2(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td class="visible-with-data" id="ObjectID"colspan="2"><strong>ObjectID</strong><br />' + (feature.properties['ObjectID'] !== null ? autolinker.link(feature.properties['ObjectID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FacilityID'] !== null ? autolinker.link(feature.properties['FacilityID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FromBreak'] !== null ? autolinker.link(feature.properties['FromBreak'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ToBreak'] !== null ? autolinker.link(feature.properties['ToBreak'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Luas'] !== null ? autolinker.link(feature.properties['Luas'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_WilayahAksesibilitasHalteBus_2_0() {
+            return {
+                pane: 'pane_WilayahAksesibilitasHalteBus_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(141,90,153,1.0)',
+                interactive: false,
+            }
+        }
+        map.createPane('pane_WilayahAksesibilitasHalteBus_2');
+        map.getPane('pane_WilayahAksesibilitasHalteBus_2').style.zIndex = 402;
+        map.getPane('pane_WilayahAksesibilitasHalteBus_2').style['mix-blend-mode'] = 'normal';
+        var layer_WilayahAksesibilitasHalteBus_2 = new L.geoJson(json_WilayahAksesibilitasHalteBus_2, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_WilayahAksesibilitasHalteBus_2',
+            layerName: 'layer_WilayahAksesibilitasHalteBus_2',
+            pane: 'pane_WilayahAksesibilitasHalteBus_2',
+            onEachFeature: pop_WilayahAksesibilitasHalteBus_2,
+            style: style_WilayahAksesibilitasHalteBus_2_0,
+        });
+        bounds_group.addLayer(layer_WilayahAksesibilitasHalteBus_2);
+        map.addLayer(layer_WilayahAksesibilitasHalteBus_2);
+        function pop_AksesibilitasHalteBus_3(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['OBJECTID'] !== null ? autolinker.link(feature.properties['OBJECTID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FolderPath'] !== null ? autolinker.link(feature.properties['FolderPath'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SymbolID'] !== null ? autolinker.link(feature.properties['SymbolID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['AltMode'] !== null ? autolinker.link(feature.properties['AltMode'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Base'] !== null ? autolinker.link(feature.properties['Base'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Snippet'] !== null ? autolinker.link(feature.properties['Snippet'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['PopupInfo'] !== null ? autolinker.link(feature.properties['PopupInfo'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['HasLabel'] !== null ? autolinker.link(feature.properties['HasLabel'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LabelID'] !== null ? autolinker.link(feature.properties['LabelID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Jarak'] !== null ? autolinker.link(feature.properties['Jarak'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['type'] !== null ? autolinker.link(feature.properties['type'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['start'] !== null ? autolinker.link(feature.properties['start'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_AksesibilitasHalteBus_3_0() {
+            return {
+                pane: 'pane_AksesibilitasHalteBus_3',
+                opacity: 1,
+                color: 'rgba(118,0,150,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: false,
+            }
+        }
+        map.createPane('pane_AksesibilitasHalteBus_3');
+        map.getPane('pane_AksesibilitasHalteBus_3').style.zIndex = 403;
+        map.getPane('pane_AksesibilitasHalteBus_3').style['mix-blend-mode'] = 'normal';
+        var layer_AksesibilitasHalteBus_3 = new L.geoJson(json_AksesibilitasHalteBus_3, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_AksesibilitasHalteBus_3',
+            layerName: 'layer_AksesibilitasHalteBus_3',
+            pane: 'pane_AksesibilitasHalteBus_3',
+            onEachFeature: pop_AksesibilitasHalteBus_3,
+            style: style_AksesibilitasHalteBus_3_0,
+        });
+        bounds_group.addLayer(layer_AksesibilitasHalteBus_3);
+        map.addLayer(layer_AksesibilitasHalteBus_3);
+        function pop_RuteBusSurabaya_4(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td class="visible-with-data" id="Name">' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_RuteBusSurabaya_4_0(feature) {
+            switch(String(feature.properties['Name'])) {
+                case 'Suroboyo Bus - R1-R2':
+                    return {
+                pane: 'pane_RuteBusSurabaya_4',
+                opacity: 1,
+                color: 'rgba(189,38,206,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 3.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Suroboyo Bus - R7-R8':
+                    return {
+                pane: 'pane_RuteBusSurabaya_4',
+                opacity: 1,
+                color: 'rgba(38,223,134,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 3.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Trans Semanggi - K2L':
+                    return {
+                pane: 'pane_RuteBusSurabaya_4',
+                opacity: 1,
+                color: 'rgba(204,235,132,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 3.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Trans Semanggi - K3L':
+                    return {
+                pane: 'pane_RuteBusSurabaya_4',
+                opacity: 1,
+                color: 'rgba(228,86,71,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 3.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_RuteBusSurabaya_4');
+        map.getPane('pane_RuteBusSurabaya_4').style.zIndex = 404;
+        map.getPane('pane_RuteBusSurabaya_4').style['mix-blend-mode'] = 'normal';
+        var layer_RuteBusSurabaya_4 = new L.geoJson(json_RuteBusSurabaya_4, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_RuteBusSurabaya_4',
+            layerName: 'layer_RuteBusSurabaya_4',
+            pane: 'pane_RuteBusSurabaya_4',
+            onEachFeature: pop_RuteBusSurabaya_4,
+            style: style_RuteBusSurabaya_4_0,
+        });
+        bounds_group.addLayer(layer_RuteBusSurabaya_4);
+        map.addLayer(layer_RuteBusSurabaya_4);
+        function pop_HalteBusSurabaya_5(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td class="visible-with-data" id="Name">' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_HalteBusSurabaya_5_0() {
+            return {
+                pane: 'pane_HalteBusSurabaya_5',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(196,60,57,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_HalteBusSurabaya_5');
+        map.getPane('pane_HalteBusSurabaya_5').style.zIndex = 405;
+        map.getPane('pane_HalteBusSurabaya_5').style['mix-blend-mode'] = 'normal';
+        var layer_HalteBusSurabaya_5 = new L.geoJson(json_HalteBusSurabaya_5, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_HalteBusSurabaya_5',
+            layerName: 'layer_HalteBusSurabaya_5',
+            pane: 'pane_HalteBusSurabaya_5',
+            onEachFeature: pop_HalteBusSurabaya_5,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_HalteBusSurabaya_5_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_HalteBusSurabaya_5);
+        map.addLayer(layer_HalteBusSurabaya_5);
+        function pop_WilayahAksesibilitasStasiunMRT_6(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Id'] !== null ? autolinker.link(feature.properties['Id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Luas'] !== null ? autolinker.link(feature.properties['Luas'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_WilayahAksesibilitasStasiunMRT_6_0() {
+            return {
+                pane: 'pane_WilayahAksesibilitasStasiunMRT_6',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(114,155,111,1.0)',
+                interactive: false,
+            }
+        }
+        map.createPane('pane_WilayahAksesibilitasStasiunMRT_6');
+        map.getPane('pane_WilayahAksesibilitasStasiunMRT_6').style.zIndex = 406;
+        map.getPane('pane_WilayahAksesibilitasStasiunMRT_6').style['mix-blend-mode'] = 'normal';
+        var layer_WilayahAksesibilitasStasiunMRT_6 = new L.geoJson(json_WilayahAksesibilitasStasiunMRT_6, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_WilayahAksesibilitasStasiunMRT_6',
+            layerName: 'layer_WilayahAksesibilitasStasiunMRT_6',
+            pane: 'pane_WilayahAksesibilitasStasiunMRT_6',
+            onEachFeature: pop_WilayahAksesibilitasStasiunMRT_6,
+            style: style_WilayahAksesibilitasStasiunMRT_6_0,
+        });
+        bounds_group.addLayer(layer_WilayahAksesibilitasStasiunMRT_6);
+        map.addLayer(layer_WilayahAksesibilitasStasiunMRT_6);
+        function pop_AksesibilitasStasiunMRT_7(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">FolderPath</th>\
+                        <td class="visible-with-data" id="FolderPath">' + (feature.properties['FolderPath'] !== null ? autolinker.link(feature.properties['FolderPath'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SymbolID'] !== null ? autolinker.link(feature.properties['SymbolID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['AltMode'] !== null ? autolinker.link(feature.properties['AltMode'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Base'] !== null ? autolinker.link(feature.properties['Base'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Snippet'] !== null ? autolinker.link(feature.properties['Snippet'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['PopupInfo'] !== null ? autolinker.link(feature.properties['PopupInfo'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['HasLabel'] !== null ? autolinker.link(feature.properties['HasLabel'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LabelID'] !== null ? autolinker.link(feature.properties['LabelID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Index_id'] !== null ? autolinker.link(feature.properties['Index_id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['OBJECTID'] !== null ? autolinker.link(feature.properties['OBJECTID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['type'] !== null ? autolinker.link(feature.properties['type'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['start'] !== null ? autolinker.link(feature.properties['start'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_AksesibilitasStasiunMRT_7_0() {
+            return {
+                pane: 'pane_AksesibilitasStasiunMRT_7',
+                opacity: 1,
+                color: 'rgba(24,113,58,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: false,
+            }
+        }
+        map.createPane('pane_AksesibilitasStasiunMRT_7');
+        map.getPane('pane_AksesibilitasStasiunMRT_7').style.zIndex = 407;
+        map.getPane('pane_AksesibilitasStasiunMRT_7').style['mix-blend-mode'] = 'normal';
+        var layer_AksesibilitasStasiunMRT_7 = new L.geoJson(json_AksesibilitasStasiunMRT_7, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_AksesibilitasStasiunMRT_7',
+            layerName: 'layer_AksesibilitasStasiunMRT_7',
+            pane: 'pane_AksesibilitasStasiunMRT_7',
+            onEachFeature: pop_AksesibilitasStasiunMRT_7,
+            style: style_AksesibilitasStasiunMRT_7_0,
+        });
+        bounds_group.addLayer(layer_AksesibilitasStasiunMRT_7);
+        map.addLayer(layer_AksesibilitasStasiunMRT_7);
+        function pop_RuteMRT_8(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td class="visible-with-data" id="Name">' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_RuteMRT_8_0() {
+            return {
+                pane: 'pane_RuteMRT_8',
+                opacity: 1,
+                color: 'rgba(141,90,153,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 3.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_RuteMRT_8');
+        map.getPane('pane_RuteMRT_8').style.zIndex = 408;
+        map.getPane('pane_RuteMRT_8').style['mix-blend-mode'] = 'normal';
+        var layer_RuteMRT_8 = new L.geoJson(json_RuteMRT_8, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_RuteMRT_8',
+            layerName: 'layer_RuteMRT_8',
+            pane: 'pane_RuteMRT_8',
+            onEachFeature: pop_RuteMRT_8,
+            style: style_RuteMRT_8_0,
+        });
+        bounds_group.addLayer(layer_RuteMRT_8);
+        map.addLayer(layer_RuteMRT_8);
+        function pop_StasiunMRT_9(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td class="visible-with-data" id="Name">' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Rute</th>\
+                        <td class="visible-with-data" id="Rute">' + (feature.properties['Rute'] !== null ? autolinker.link(feature.properties['Rute'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_StasiunMRT_9_0(feature) {
+            switch(String(feature.properties['Rute'])) {
+                case 'North-Sout':
+                    return {
+                pane: 'pane_StasiunMRT_9',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(242,230,62,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'West-East':
+                    return {
+                pane: 'pane_StasiunMRT_9',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(88,212,109,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_StasiunMRT_9');
+        map.getPane('pane_StasiunMRT_9').style.zIndex = 409;
+        map.getPane('pane_StasiunMRT_9').style['mix-blend-mode'] = 'normal';
+        var layer_StasiunMRT_9 = new L.geoJson(json_StasiunMRT_9, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_StasiunMRT_9',
+            layerName: 'layer_StasiunMRT_9',
+            pane: 'pane_StasiunMRT_9',
+            onEachFeature: pop_StasiunMRT_9,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_StasiunMRT_9_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_StasiunMRT_9);
+        map.addLayer(layer_StasiunMRT_9);
+        function pop_RelKereta_10(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">RENCANA</th>\
+                        <td class="visible-with-data" id="RENCANA">' + (feature.properties['RENCANA'] !== null ? autolinker.link(feature.properties['RENCANA'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_RelKereta_10_0() {
+            return {
+                pane: 'pane_RelKereta_10',
+                opacity: 1,
+                color: 'rgba(190,178,151,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_RelKereta_10');
+        map.getPane('pane_RelKereta_10').style.zIndex = 410;
+        map.getPane('pane_RelKereta_10').style['mix-blend-mode'] = 'normal';
+        var layer_RelKereta_10 = new L.geoJson(json_RelKereta_10, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_RelKereta_10',
+            layerName: 'layer_RelKereta_10',
+            pane: 'pane_RelKereta_10',
+            onEachFeature: pop_RelKereta_10,
+            style: style_RelKereta_10_0,
+        });
+        bounds_group.addLayer(layer_RelKereta_10);
+        map.addLayer(layer_RelKereta_10);
+        function pop_WilayahAksesibilitasStasiunSRLL_11(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FacilityID'] !== null ? autolinker.link(feature.properties['FacilityID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FromBreak'] !== null ? autolinker.link(feature.properties['FromBreak'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ToBreak'] !== null ? autolinker.link(feature.properties['ToBreak'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Luas'] !== null ? autolinker.link(feature.properties['Luas'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_WilayahAksesibilitasStasiunSRLL_11_0() {
+            return {
+                pane: 'pane_WilayahAksesibilitasStasiunSRLL_11',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(125,139,143,1.0)',
+                interactive: false,
+            }
+        }
+        map.createPane('pane_WilayahAksesibilitasStasiunSRLL_11');
+        map.getPane('pane_WilayahAksesibilitasStasiunSRLL_11').style.zIndex = 411;
+        map.getPane('pane_WilayahAksesibilitasStasiunSRLL_11').style['mix-blend-mode'] = 'normal';
+        var layer_WilayahAksesibilitasStasiunSRLL_11 = new L.geoJson(json_WilayahAksesibilitasStasiunSRLL_11, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_WilayahAksesibilitasStasiunSRLL_11',
+            layerName: 'layer_WilayahAksesibilitasStasiunSRLL_11',
+            pane: 'pane_WilayahAksesibilitasStasiunSRLL_11',
+            onEachFeature: pop_WilayahAksesibilitasStasiunSRLL_11,
+            style: style_WilayahAksesibilitasStasiunSRLL_11_0,
+        });
+        bounds_group.addLayer(layer_WilayahAksesibilitasStasiunSRLL_11);
+        map.addLayer(layer_WilayahAksesibilitasStasiunSRLL_11);
+        function pop_StasiunSRLL_12(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td class="visible-with-data" id="Name"colspan="2"><strong>Name</strong><br />' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Status</th>\
+                        <td class="visible-with-data" id="Status">' + (feature.properties['Status'] !== null ? autolinker.link(feature.properties['Status'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_StasiunSRLL_12_0() {
+            return {
+                pane: 'pane_StasiunSRLL_12',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,0,255,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_StasiunSRLL_12');
+        map.getPane('pane_StasiunSRLL_12').style.zIndex = 412;
+        map.getPane('pane_StasiunSRLL_12').style['mix-blend-mode'] = 'normal';
+        var layer_StasiunSRLL_12 = new L.geoJson(json_StasiunSRLL_12, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_StasiunSRLL_12',
+            layerName: 'layer_StasiunSRLL_12',
+            pane: 'pane_StasiunSRLL_12',
+            onEachFeature: pop_StasiunSRLL_12,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.shapeMarker(latlng, style_StasiunSRLL_12_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_StasiunSRLL_12);
+        map.addLayer(layer_StasiunSRLL_12);
+        function pop_WilayahAksesibilitasStasiunKereta_13(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FacilityID'] !== null ? autolinker.link(feature.properties['FacilityID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FromBreak'] !== null ? autolinker.link(feature.properties['FromBreak'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ToBreak'] !== null ? autolinker.link(feature.properties['ToBreak'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Luas'] !== null ? autolinker.link(feature.properties['Luas'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_WilayahAksesibilitasStasiunKereta_13_0() {
+            return {
+                pane: 'pane_WilayahAksesibilitasStasiunKereta_13',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,158,23,1.0)',
+                interactive: false,
+            }
+        }
+        map.createPane('pane_WilayahAksesibilitasStasiunKereta_13');
+        map.getPane('pane_WilayahAksesibilitasStasiunKereta_13').style.zIndex = 413;
+        map.getPane('pane_WilayahAksesibilitasStasiunKereta_13').style['mix-blend-mode'] = 'normal';
+        var layer_WilayahAksesibilitasStasiunKereta_13 = new L.geoJson(json_WilayahAksesibilitasStasiunKereta_13, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_WilayahAksesibilitasStasiunKereta_13',
+            layerName: 'layer_WilayahAksesibilitasStasiunKereta_13',
+            pane: 'pane_WilayahAksesibilitasStasiunKereta_13',
+            onEachFeature: pop_WilayahAksesibilitasStasiunKereta_13,
+            style: style_WilayahAksesibilitasStasiunKereta_13_0,
+        });
+        bounds_group.addLayer(layer_WilayahAksesibilitasStasiunKereta_13);
+        map.addLayer(layer_WilayahAksesibilitasStasiunKereta_13);
+        function pop_AksesibilitasStasiunKereta_14(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2"><strong>Name</strong><br />' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_AksesibilitasStasiunKereta_14_0() {
+            return {
+                pane: 'pane_AksesibilitasStasiunKereta_14',
+                opacity: 1,
+                color: 'rgba(152,125,183,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_AksesibilitasStasiunKereta_14');
+        map.getPane('pane_AksesibilitasStasiunKereta_14').style.zIndex = 414;
+        map.getPane('pane_AksesibilitasStasiunKereta_14').style['mix-blend-mode'] = 'normal';
+        var layer_AksesibilitasStasiunKereta_14 = new L.geoJson(json_AksesibilitasStasiunKereta_14, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_AksesibilitasStasiunKereta_14',
+            layerName: 'layer_AksesibilitasStasiunKereta_14',
+            pane: 'pane_AksesibilitasStasiunKereta_14',
+            onEachFeature: pop_AksesibilitasStasiunKereta_14,
+            style: style_AksesibilitasStasiunKereta_14_0,
+        });
+        bounds_group.addLayer(layer_AksesibilitasStasiunKereta_14);
+        map.addLayer(layer_AksesibilitasStasiunKereta_14);
+        function pop_StasiunKereta_15(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td class="visible-with-data" id="Name"colspan="2"><strong>Name</strong><br />' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Status</th>\
+                        <td class="visible-with-data" id="Status">' + (feature.properties['Status'] !== null ? autolinker.link(feature.properties['Status'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Foto'] !== null ? autolinker.link(feature.properties['Foto'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_StasiunKereta_15_0() {
+            return {
+                pane: 'pane_StasiunKereta_15',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(231,113,72,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_StasiunKereta_15');
+        map.getPane('pane_StasiunKereta_15').style.zIndex = 415;
+        map.getPane('pane_StasiunKereta_15').style['mix-blend-mode'] = 'normal';
+        var layer_StasiunKereta_15 = new L.geoJson(json_StasiunKereta_15, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_StasiunKereta_15',
+            layerName: 'layer_StasiunKereta_15',
+            pane: 'pane_StasiunKereta_15',
+            onEachFeature: pop_StasiunKereta_15,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_StasiunKereta_15_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_StasiunKereta_15);
+        map.addLayer(layer_StasiunKereta_15);
+        var osmGeocoder = new L.Control.Geocoder({
+            collapsed: true,
+            position: 'topleft',
+            text: 'Search',
+            title: 'Testing'
+        }).addTo(map);
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .className += ' fa fa-search';
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .title += 'Search for a place';
+        var baseMaps = {};
+        var overlaysTree = [
+            {label: '<img src="legend/StasiunKereta_15.png" /> Stasiun Kereta', layer: layer_StasiunKereta_15},
+            {label: '<img src="legend/AksesibilitasStasiunKereta_14.png" /> Aksesibilitas Stasiun Kereta', layer: layer_AksesibilitasStasiunKereta_14},
+            {label: '<img src="legend/WilayahAksesibilitasStasiunKereta_13.png" /> Wilayah Aksesibilitas Stasiun Kereta', layer: layer_WilayahAksesibilitasStasiunKereta_13},
+            {label: '<img src="legend/StasiunSRLL_12.png" /> Stasiun SRLL', layer: layer_StasiunSRLL_12},
+            {label: '<img src="legend/WilayahAksesibilitasStasiunSRLL_11.png" /> Wilayah Aksesibilitas Stasiun SRLL', layer: layer_WilayahAksesibilitasStasiunSRLL_11},
+            {label: '<img src="legend/RelKereta_10.png" /> Rel Kereta', layer: layer_RelKereta_10},
+            {label: 'Stasiun MRT<br /><table><tr><td style="text-align: center;"><img src="legend/StasiunMRT_9_NorthSout0.png" /></td><td>North-Sout</td></tr><tr><td style="text-align: center;"><img src="legend/StasiunMRT_9_WestEast1.png" /></td><td>West-East</td></tr></table>', layer: layer_StasiunMRT_9},
+            {label: '<img src="legend/RuteMRT_8.png" /> Rute MRT', layer: layer_RuteMRT_8},
+            {label: '<img src="legend/AksesibilitasStasiunMRT_7.png" /> Aksesibilitas Stasiun MRT', layer: layer_AksesibilitasStasiunMRT_7},
+            {label: '<img src="legend/WilayahAksesibilitasStasiunMRT_6.png" /> Wilayah Aksesibilitas Stasiun MRT', layer: layer_WilayahAksesibilitasStasiunMRT_6},
+            {label: '<img src="legend/HalteBusSurabaya_5.png" /> Halte Bus Surabaya', layer: layer_HalteBusSurabaya_5},
+            {label: 'Rute Bus Surabaya<br /><table><tr><td style="text-align: center;"><img src="legend/RuteBusSurabaya_4_SuroboyoBusR1R20.png" /></td><td>Suroboyo Bus - R1-R2</td></tr><tr><td style="text-align: center;"><img src="legend/RuteBusSurabaya_4_SuroboyoBusR7R81.png" /></td><td>Suroboyo Bus - R7-R8</td></tr><tr><td style="text-align: center;"><img src="legend/RuteBusSurabaya_4_TransSemanggiK2L2.png" /></td><td>Trans Semanggi - K2L</td></tr><tr><td style="text-align: center;"><img src="legend/RuteBusSurabaya_4_TransSemanggiK3L3.png" /></td><td>Trans Semanggi - K3L</td></tr></table>', layer: layer_RuteBusSurabaya_4},
+            {label: '<img src="legend/AksesibilitasHalteBus_3.png" /> Aksesibilitas Halte Bus', layer: layer_AksesibilitasHalteBus_3},
+            {label: '<img src="legend/WilayahAksesibilitasHalteBus_2.png" /> Wilayah Aksesibilitas Halte Bus', layer: layer_WilayahAksesibilitasHalteBus_2},
+            {label: '<img src="legend/Administrasi_SBY_1.png" /> Administrasi_SBY', layer: layer_Administrasi_SBY_1},
+            {label: "Positron", layer: layer_Positron_0},]
+        var lay = L.control.layers.tree(null, overlaysTree,{
+            //namedToggle: true,
+            //selectorBack: false,
+            //closedSymbol: '&#8862; &#x1f5c0;',
+            //openedSymbol: '&#8863; &#x1f5c1;',
+            //collapseAll: 'Collapse all',
+            //expandAll: 'Expand all',
+            collapsed: false, 
+        });
+        lay.addTo(map);
+        setBounds();
+        </script>
+    </body>
+</html>
